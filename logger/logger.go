@@ -21,7 +21,7 @@ func SetFormatter(format logrus.Formatter) {
 	log.SetFormatter(format)
 }
 
-func SetLaval(laval logrus.Level) {
+func SetLevel(laval logrus.Level) {
 	log.SetLevel(laval)
 }
 

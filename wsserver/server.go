@@ -6,14 +6,14 @@ import (
 	"errors"
 	"fmt"
 	"github.com/chuckpreslar/emission"
-	"github.com/gorilla/websocket"
-	"github.com/sirupsen/logrus"
-	"net/http"
-	"time"
 	"github.com/edwsel/ws-proto/handlers"
 	"github.com/edwsel/ws-proto/logger"
 	"github.com/edwsel/ws-proto/peer"
 	"github.com/edwsel/ws-proto/transport"
+	"github.com/gorilla/websocket"
+	"github.com/sirupsen/logrus"
+	"net/http"
+	"time"
 )
 
 type Level uint32
