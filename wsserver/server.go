@@ -84,9 +84,9 @@ func (server *WebsocketServer) ServeHTTP(writer http.ResponseWriter, request *ht
 		case error:
 			logger.WithError(err).
 				Error("WebSocketServer.ServeHTTP.beforeUpgrader")
-		}
 
-		responseError(writer, err.Error(), http.StatusInternalServerError)
+			responseError(writer, err.Error(), http.StatusInternalServerError)
+		}
 
 		return
 	}
