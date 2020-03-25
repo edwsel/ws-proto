@@ -16,8 +16,6 @@ import (
 	"time"
 )
 
-type Level uint32
-
 type Handel func(ws *transport.BaseTransport, request *http.Request)
 type BeforeUpgrader func(request *http.Request, fail RaiseFail) context.Context
 type OnConnection func(peer *peer.Peer, request *http.Request)
@@ -62,8 +60,8 @@ func New() *WebsocketServer {
 	}
 }
 
-func (server *WebsocketServer) SetLogLevel(laval Level) {
-	logger.SetLevel(logrus.DebugLevel)
+func (server *WebsocketServer) SetLogLevel(level logrus.Level) {
+	logger.SetLevel(level)
 }
 
 func (server *WebsocketServer) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
