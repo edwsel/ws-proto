@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/chuckpreslar/emission"
-	"net/http"
 	"github.com/edwsel/ws-proto/logger"
 	"github.com/edwsel/ws-proto/peer"
 	"github.com/edwsel/ws-proto/transport"
+	"net/http"
 )
 
 const (
@@ -61,8 +61,6 @@ func (h *Handler) Processing(ctx context.Context, connection *transport.BaseTran
 }
 
 func (h *Handler) eventProcessing(currentPeer *peer.Peer, data []byte) {
-	currentPeer.Emit(peer.MessageEvent, currentPeer, data)
-
 	message, err := parseMessage(data)
 
 	switch err.(type) {
@@ -81,6 +79,8 @@ func (h *Handler) eventProcessing(currentPeer *peer.Peer, data []byte) {
 
 		return
 	}
+
+	currentPeer.Emit(peer.MessageEvent, currentPeer, message)
 
 	currentPeer.Emit(message.Event, currentPeer, message.Data)
 }
