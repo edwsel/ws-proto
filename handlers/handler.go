@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"github.com/chuckpreslar/emission"
 	"net/http"
-	"ws-proto/logger"
-	"ws-proto/peer"
-	"ws-proto/transport"
+	"github.com/edwsel/ws-proto/logger"
+	"github.com/edwsel/ws-proto/peer"
+	"github.com/edwsel/ws-proto/transport"
 )
 
 const (

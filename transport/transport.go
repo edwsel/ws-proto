@@ -8,7 +8,7 @@ import (
 	"net"
 	"sync"
 	"time"
-	"ws-proto/logger"
+	"github.com/edwsel/ws-proto/logger"
 )
 
 const (

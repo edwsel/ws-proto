@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 	"sync"
-	"ws-proto/logger"
-	"ws-proto/peer"
-	"ws-proto/wsserver"
+	"github.com/edwsel/ws-proto/logger"
+	"github.com/edwsel/ws-proto/peer"
+	"github.com/edwsel/ws-proto/wsserver"
 )
 
 var room sync.Map

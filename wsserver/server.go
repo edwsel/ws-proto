@@ -10,10 +10,10 @@ import (
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"time"
-	"ws-proto/handlers"
-	"ws-proto/logger"
-	"ws-proto/peer"
-	"ws-proto/transport"
+	"github.com/edwsel/ws-proto/handlers"
+	"github.com/edwsel/ws-proto/logger"
+	"github.com/edwsel/ws-proto/peer"
+	"github.com/edwsel/ws-proto/transport"
 )
 
 type Level uint32

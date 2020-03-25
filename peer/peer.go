@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/chuckpreslar/emission"
 	"github.com/google/uuid"
-	"ws-proto/transport"
+	"github.com/edwsel/ws-proto/transport"
 )
 
 const (
