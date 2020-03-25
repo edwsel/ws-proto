@@ -1,4 +1,4 @@
-module ws-proto
+module github.com/edwsel/ws-proto
 
 go 1.14
 
