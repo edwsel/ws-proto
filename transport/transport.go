@@ -3,12 +3,14 @@ package transport
 import (
 	"encoding/json"
 	"github.com/chuckpreslar/emission"
+	"github.com/edwsel/ws-proto/logger"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"net"
+	"runtime"
+	"runtime/debug"
 	"sync"
 	"time"
-	"github.com/edwsel/ws-proto/logger"
 )
 
 const (
@@ -38,9 +40,13 @@ func NewTransport(socket *websocket.Conn) *BaseTransport {
 	transport.Emitter = *emission.NewEmitter()
 
 	transport.Emitter.RecoverWith(func(event interface{}, listener interface{}, err error) {
+		_, _, l, _ := runtime.Caller(1)
+
 		logger.WithError(err).
 			WithField("event", event).
 			WithField("connection_id", transport.ConnectionId).
+			WithField("line", l).
+			WithField("stack", string(debug.Stack())).
 			Error("WebSocketServer.BaseTransport.Emitter.RecoverWith")
 	})
 

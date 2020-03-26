@@ -3,12 +3,13 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/chuckpreslar/emission"
 	"github.com/edwsel/ws-proto/logger"
 	"github.com/edwsel/ws-proto/peer"
 	"github.com/edwsel/ws-proto/transport"
 	"net/http"
+	"runtime"
+	"runtime/debug"
 )
 
 const (
@@ -34,8 +35,13 @@ func (h *Handler) Processing(ctx context.Context, connection *transport.BaseTran
 	peerConnection := peer.New(ctx, connection)
 
 	h.Emitter.RecoverWith(func(event interface{}, listener interface{}, err error) {
-		logger.WithField("event", fmt.Sprintf("%v", event)).
-			WithError(err).
+		_, _, l, _ := runtime.Caller(1)
+
+		logger.WithError(err).
+			WithField("event", event).
+			WithField("connection_id", connection.ConnectionId).
+			WithField("line", l).
+			WithField("stack", string(debug.Stack())).
 			Error("WebSocketServer.Handler.emitterRecovery")
 
 		peerConnection.Close()
