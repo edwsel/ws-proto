@@ -27,11 +27,12 @@ type Peer struct {
 func New(ctx context.Context, connection *transport.BaseTransport) *Peer {
 	emitter := emission.NewEmitter()
 	emitter.RecoverWith(func(event interface{}, i2 interface{}, err error) {
-		_, _, l, _ := runtime.Caller(1)
+		_, f, l, _ := runtime.Caller(1)
 
 		logger.WithError(err).
 			WithField("event", event).
 			WithField("connection_id", connection.ConnectionId).
+			WithField("file", f).
 			WithField("line", l).
 			WithField("stack", string(debug.Stack())).
 			Error("WebSocketServer.peer.RecoverWith")

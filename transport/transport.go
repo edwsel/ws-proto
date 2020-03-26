@@ -40,11 +40,12 @@ func NewTransport(socket *websocket.Conn) *BaseTransport {
 	transport.Emitter = *emission.NewEmitter()
 
 	transport.Emitter.RecoverWith(func(event interface{}, listener interface{}, err error) {
-		_, _, l, _ := runtime.Caller(1)
+		_, f, l, _ := runtime.Caller(1)
 
 		logger.WithError(err).
 			WithField("event", event).
 			WithField("connection_id", transport.ConnectionId).
+			WithField("file", f).
 			WithField("line", l).
 			WithField("stack", string(debug.Stack())).
 			Error("WebSocketServer.BaseTransport.Emitter.RecoverWith")

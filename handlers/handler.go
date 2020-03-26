@@ -35,11 +35,12 @@ func (h *Handler) Processing(ctx context.Context, connection *transport.BaseTran
 	peerConnection := peer.New(ctx, connection)
 
 	h.Emitter.RecoverWith(func(event interface{}, listener interface{}, err error) {
-		_, _, l, _ := runtime.Caller(1)
+		_, f, l, _ := runtime.Caller(1)
 
 		logger.WithError(err).
 			WithField("event", event).
 			WithField("connection_id", connection.ConnectionId).
+			WithField("file", f).
 			WithField("line", l).
 			WithField("stack", string(debug.Stack())).
 			Error("WebSocketServer.Handler.emitterRecovery")
