@@ -8,7 +8,7 @@ import (
 	"github.com/chuckpreslar/emission"
 	"github.com/edwsel/ws-proto/handlers"
 	"github.com/edwsel/ws-proto/logger"
-	"github.com/edwsel/ws-proto/peer"
+	"github.com/edwsel/ws-proto/connection"
 	"github.com/edwsel/ws-proto/transport"
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
@@ -18,7 +18,7 @@ import (
 
 type Handel func(ws *transport.BaseTransport, request *http.Request)
 type BeforeUpgrader func(request *http.Request, fail RaiseFail) context.Context
-type OnConnection func(peer *peer.Peer, request *http.Request)
+type OnConnection func(peer *connection.Connection, request *http.Request)
 type RaiseFail func(message string, code int, data ...interface{})
 
 func DefaultUpgrader() websocket.Upgrader {

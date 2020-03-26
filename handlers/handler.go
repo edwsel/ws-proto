@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/chuckpreslar/emission"
+	"github.com/edwsel/ws-proto/connection"
 	"github.com/edwsel/ws-proto/logger"
-	"github.com/edwsel/ws-proto/peer"
 	"github.com/edwsel/ws-proto/transport"
 	"net/http"
 	"runtime"
@@ -31,15 +31,15 @@ func New() *Handler {
 	}
 }
 
-func (h *Handler) Processing(ctx context.Context, connection *transport.BaseTransport, request *http.Request) {
-	peerConnection := peer.New(ctx, connection)
+func (h *Handler) Processing(ctx context.Context, transport *transport.BaseTransport, request *http.Request) {
+	peerConnection := connection.New(ctx, transport)
 
 	h.Emitter.RecoverWith(func(event interface{}, listener interface{}, err error) {
 		_, f, l, _ := runtime.Caller(1)
 
 		logger.WithError(err).
 			WithField("event", event).
-			WithField("connection_id", connection.ConnectionId).
+			WithField("connection_id", transport.ConnectionId).
 			WithField("file", f).
 			WithField("line", l).
 			WithField("stack", string(debug.Stack())).
@@ -48,26 +48,26 @@ func (h *Handler) Processing(ctx context.Context, connection *transport.BaseTran
 		peerConnection.Close()
 	})
 
-	logger.WithField("message", "Peer connected").
+	logger.WithField("message", "Connection connected").
 		WithField("connection_id", peerConnection.Uid()).
-		Info("WebSocketServer.Handler.Processing.Peer")
+		Info("WebSocketServer.Handler.Processing.Connection")
 
-	connection.On(transport.ErrorEvent, func(code int, message string) {
-		peerConnection.Emit(peer.ErrorEvent, peerConnection, code, message)
+	transport.On(connection.ErrorEvent, func(code int, message string) {
+		peerConnection.Emit(connection.ErrorEvent, peerConnection, code, message)
 	})
 
-	connection.On(transport.CloseEvent, func(code int, message string) {
-		peerConnection.Emit(peer.CloseEvent, peerConnection, code, message)
+	transport.On(connection.CloseEvent, func(code int, message string) {
+		peerConnection.Emit(connection.CloseEvent, peerConnection, code, message)
 	})
 
-	connection.On(transport.MessageEvent, func(message []byte) {
+	transport.On(connection.MessageEvent, func(message []byte) {
 		h.eventProcessing(peerConnection, message)
 	})
 
 	h.Emit(ConnectionEvent, peerConnection, request)
 }
 
-func (h *Handler) eventProcessing(currentPeer *peer.Peer, data []byte) {
+func (h *Handler) eventProcessing(currentPeer *connection.Connection, data []byte) {
 	message, err := parseMessage(data)
 
 	switch err.(type) {
@@ -76,7 +76,7 @@ func (h *Handler) eventProcessing(currentPeer *peer.Peer, data []byte) {
 			WithField("connection_id", currentPeer.Uid()).
 			Warn("WebSocketServer.Handler.eventProcessing.parseMessage")
 
-		currentPeer.Emit(peer.EmptyEvent, currentPeer, data)
+		currentPeer.Emit(connection.EmptyEvent, currentPeer, data)
 
 		return
 	case error:
@@ -87,7 +87,7 @@ func (h *Handler) eventProcessing(currentPeer *peer.Peer, data []byte) {
 		return
 	}
 
-	currentPeer.Emit(peer.MessageEvent, currentPeer, message.Event, message.Data)
+	currentPeer.Emit(connection.MessageEvent, currentPeer, message.Event, message.Data)
 
 	currentPeer.Emit(message.Event, currentPeer, message.Data)
 }

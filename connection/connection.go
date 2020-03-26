@@ -1,4 +1,4 @@
-package peer
+package connection
 
 import (
 	"context"
@@ -17,14 +17,14 @@ const (
 	CloseEvent   = "close"
 )
 
-type Peer struct {
+type Connection struct {
 	*emission.Emitter
 	uid        uuid.UUID
 	connection *transport.BaseTransport
 	ctx        context.Context
 }
 
-func New(ctx context.Context, connection *transport.BaseTransport) *Peer {
+func New(ctx context.Context, connection *transport.BaseTransport) *Connection {
 	emitter := emission.NewEmitter()
 	emitter.RecoverWith(func(event interface{}, i2 interface{}, err error) {
 		_, f, l, _ := runtime.Caller(1)
@@ -35,28 +35,28 @@ func New(ctx context.Context, connection *transport.BaseTransport) *Peer {
 			WithField("file", f).
 			WithField("line", l).
 			WithField("stack", string(debug.Stack())).
-			Error("WebSocketServer.peer.RecoverWith")
+			Error("WebSocketServer.connection.RecoverWith")
 	})
 
-	return &Peer{
+	return &Connection{
 		Emitter:    emitter,
 		connection: connection,
 		ctx:        ctx,
 	}
 }
 
-func (p *Peer) Uid() string {
+func (p *Connection) Uid() string {
 	return p.connection.ConnectionId
 }
 
-func (p *Peer) Context() context.Context {
+func (p *Connection) Context() context.Context {
 	return p.ctx
 }
 
-func (p *Peer) Send(event string, message interface{}) error {
+func (p *Connection) Send(event string, message interface{}) error {
 	return p.connection.Write(event, message)
 }
 
-func (p *Peer) Close() {
+func (p *Connection) Close() {
 	p.connection.Close()
 }
