@@ -80,7 +80,7 @@ func (h *Handler) eventProcessing(currentPeer *peer.Peer, data []byte) {
 		return
 	}
 
-	currentPeer.Emit(peer.MessageEvent, currentPeer, message)
+	currentPeer.Emit(peer.MessageEvent, currentPeer, message.Event, message.Data)
 
 	currentPeer.Emit(message.Event, currentPeer, message.Data)
 }
