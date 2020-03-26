@@ -2,11 +2,11 @@ package main
 
 import (
 	"context"
-	"net/http"
-	"sync"
 	"github.com/edwsel/ws-proto/logger"
 	"github.com/edwsel/ws-proto/peer"
 	"github.com/edwsel/ws-proto/wsserver"
+	"net/http"
+	"sync"
 )
 
 var room sync.Map
@@ -43,7 +43,7 @@ func main() {
 			"peer_id": currentPeer.Context().Value("peer_id"),
 		})
 
-		currentPeer.On(peer.CloseEvent, func(code int, message string) {
+		currentPeer.On(peer.CloseEvent, func(connection *peer.Peer, code int, message string) {
 			logger.Debug("dd", code, message)
 		})
 	})

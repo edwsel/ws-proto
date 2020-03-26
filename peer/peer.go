@@ -3,8 +3,11 @@ package peer
 import (
 	"context"
 	"github.com/chuckpreslar/emission"
-	"github.com/google/uuid"
+	"github.com/edwsel/ws-proto/logger"
 	"github.com/edwsel/ws-proto/transport"
+	"github.com/google/uuid"
+	"runtime"
+	"runtime/debug"
 )
 
 const (
@@ -22,8 +25,18 @@ type Peer struct {
 }
 
 func New(ctx context.Context, connection *transport.BaseTransport) *Peer {
+	emitter := emission.NewEmitter()
+	emitter.RecoverWith(func(i interface{}, i2 interface{}, err error) {
+		_, _, l, _ := runtime.Caller(1)
+
+		logger.WithError(err).
+			WithField("line", l).
+			WithField("stack", string(debug.Stack())).
+			Error("WebSocketServer.peer.RecoverWith")
+	})
+
 	return &Peer{
-		Emitter:    emission.NewEmitter(),
+		Emitter:    emitter,
 		connection: connection,
 		ctx:        ctx,
 	}
