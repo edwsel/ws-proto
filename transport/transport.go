@@ -53,6 +53,8 @@ func NewTransport(socket *websocket.Conn) *BaseTransport {
 			Warn("WebSocketServer.BaseTransport.socket.SetCloseHandler")
 
 		transport.Emit("close", code, message)
+		transport.Close()
+
 		transport.closed = true
 		return nil
 	})
