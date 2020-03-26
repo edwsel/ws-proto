@@ -23,6 +23,10 @@ func main() {
 	server.OnConnection(func(currentPeer *peer.Peer, request *http.Request) {
 		room.Store(currentPeer.Uid(), currentPeer)
 
+		currentPeer.On(peer.MessageEvent, func(c *peer.Peer, method string, data interface{}) {
+			logger.Debug(method, data)
+		})
+
 		currentPeer.On("sdp", func(data interface{}) {
 			room.Range(func(key, value interface{}) bool {
 				subPeer := value.(*peer.Peer)
@@ -44,5 +48,5 @@ func main() {
 		})
 	})
 
-	server.ListenAndServe(":8081")
+	server.ListenAndServe(":9999")
 }
