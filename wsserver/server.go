@@ -64,6 +64,10 @@ func (server *WebsocketServer) SetLogLevel(level logrus.Level) {
 	logger.SetLevel(level)
 }
 
+func (server *WebsocketServer) SetLogFormat(format logrus.Formatter)  {
+	logger.SetFormatter(format)
+}
+
 func (server *WebsocketServer) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	defer func() {
 		if rec := recover(); rec != nil {
